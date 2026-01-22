@@ -161,7 +161,10 @@ def get_process_metrics(frontmost_app: str | None) -> list[dict[str, Any]]:
     for proc in psutil.process_iter(['pid', 'name', 'memory_info', 'cpu_percent']):
         try:
             info = proc.info
-            mem_info = info['memory_info']
+            mem_info = info.get('memory_info')
+            
+            if mem_info is None:
+                continue
             
             # Convert to MB
             rss_mb = mem_info.rss // (1024 * 1024)
