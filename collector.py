@@ -2,18 +2,22 @@
 System memory metrics collector for macOS.
 """
 
+import os
 import subprocess
 import time
 from typing import Any
 
 import psutil
+from dotenv import load_dotenv
 
 from metrics_store import init_db, insert_process_snapshots, insert_system_snapshot
 
+load_dotenv()
+
 # Configuration
-DB_PATH = "system_metrics.db"
-SAMPLE_INTERVAL_SEC = 5
-TOP_N_PROCESSES = 25
+DB_PATH = os.getenv("DB_PATH", "system_metrics.db")
+SAMPLE_INTERVAL_SEC = int(os.getenv("SAMPLE_INTERVAL_SEC", "5"))
+TOP_N_PROCESSES = int(os.getenv("TOP_N_PROCESSES", "25"))
 
 
 def run_command(cmd: list[str]) -> str:

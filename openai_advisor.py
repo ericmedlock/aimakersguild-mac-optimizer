@@ -7,13 +7,17 @@ import os
 import sys
 from typing import Any
 
+from dotenv import load_dotenv
 from openai import OpenAI
 
 from advisor_summary import build_advisor_summary
 
+load_dotenv()
 
-DB_PATH = "system_metrics.db"
-MODEL = "gpt-4.1-mini"
+
+DB_PATH = os.getenv("DB_PATH", "system_metrics.db")
+MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+API_BASE_URL = os.getenv("OPENAI_API_BASE_URL")
 
 
 def build_recommendations(summary: dict) -> dict[str, Any]:
@@ -30,7 +34,11 @@ def build_recommendations(summary: dict) -> dict[str, Any]:
     if not api_key:
         return {"error": "missing_api_key"}
     
-    client = OpenAI(api_key=api_key)
+    client_kwargs = {"api_key": api_key}
+    if API_BASE_URL:
+        client_kwargs["base_url"] = API_BASE_URL
+    
+    client = OpenAI(**client_kwargs)
     
     system_prompt = """You are a macOS memory optimization advisor. Analyze the provided memory statistics and return recommendations as STRICT JSON only.
 

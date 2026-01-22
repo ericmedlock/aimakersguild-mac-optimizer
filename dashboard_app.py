@@ -2,10 +2,12 @@
 macOS Memory Dashboard - Streamlit application for visualizing system memory metrics.
 """
 
+import os
 from datetime import datetime
 
 import pandas as pd
 import streamlit as st
+from dotenv import load_dotenv
 
 from db_readers import (
     fetch_latest_snapshot,
@@ -15,10 +17,12 @@ from db_readers import (
 )
 from openai_advisor import get_latest_recommendations
 
+load_dotenv()
+
 # Constants
-DB_PATH = "system_metrics.db"
-DEFAULT_WINDOW_MINUTES = 60
-REFRESH_SECONDS = 5
+DB_PATH = os.getenv("DB_PATH", "system_metrics.db")
+DEFAULT_WINDOW_MINUTES = int(os.getenv("DEFAULT_WINDOW_MINUTES", "60"))
+REFRESH_SECONDS = int(os.getenv("REFRESH_SECONDS", "5"))
 
 
 def main():
